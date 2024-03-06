@@ -1,0 +1,192 @@
+<aside
+  class="bg-gray-800 text-white w-64 min-h-screen fixed left-0 top-0 transition-all duration-300 transform"
+  [ngClass]="{ '-translate-x-full': sidebarHidden }"
+>
+  <!-- Encabezado del Sidebar -->
+  <div class="p-4">
+    <h2 class="text-lg font-semibold">Menú</h2>
+  </div>
+
+  <!-- Elementos de la barra lateral -->
+  <ul class="">
+    <!-- Iterar sobre los elementos del menú -->
+    <ng-container *ngFor="let item of menu; let i = index">
+      <li>
+        <!-- Verificar el tipo de elemento -->
+        <ng-container [ngSwitch]="item.type">
+          <!-- Si el elemento es un enlace -->
+          <ng-container *ngSwitchCase="'link'">
+            <a
+              [routerLink]="item.route"
+              class="block p-3 hover:bg-gray-700 hover:rounded-md mx-2 justify-between items-center"
+            >
+              <span><i [class]="item.icon"></i> {{ item.title }}</span>
+            </a>
+          </ng-container>
+          <!-- Si el elemento es un título -->
+          <ng-container *ngSwitchCase="'title'">
+            <h3 class="text-gray-400 text-sm uppercase font-semibold px-3 mt-4">
+              {{ item.title }}
+            </h3>
+          </ng-container>
+          <!-- Si el elemento es un separador -->
+          <ng-container *ngSwitchCase="'divider'">
+            <hr class="border-t border-gray-700 my-2 mx-3" />
+          </ng-container>
+          <!-- Si el elemento es un submenú -->
+          <ng-container *ngSwitchCase="'submenu'">
+            <a
+              class="flex p-3 hover:bg-gray-700 hover:rounded-md mx-2 cursor-pointer justify-between items-center"
+              (click)="openSidebarSubmenu(i)"
+            >
+              <span>{{ item.title }}</span>
+              <!-- Ícono del submenú -->
+              <i
+                class="fas fa-greater-than rounded-full text-white transition-transform duration-300 transform rotate-0 w-6 h-6"
+                [ngClass]="{ 'rotate-90': item.isOpen }"
+                style="
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                "
+              ></i>
+            </a>
+            <!-- Submenú desplegable -->
+            <ul *ngIf="item.isOpen" class="pl-4 fade-in">
+              <!-- Iterar sobre los elementos del submenú -->
+              <li *ngFor="let childItem of item.children; let j = index">
+                <!-- Verificar el tipo de elemento del submenú -->
+                <ng-container [ngSwitch]="childItem.type">
+                  <!-- Si el elemento del submenú es un enlace -->
+                  <ng-container *ngSwitchCase="'link'">
+                    <a
+                      [routerLink]="childItem.route"
+                      class="block p-2 hover:bg-gray-700 hover:rounded-md mx-2 justify-between items-center"
+                    >
+                      <span
+                        ><i [class]="childItem.icon"></i>
+                        {{ childItem.title }}</span
+                      >
+                    </a>
+                  </ng-container>
+                  <!-- Si el elemento del submenú es un título -->
+                  <ng-container *ngSwitchCase="'title'">
+                    <h3
+                      class="text-gray-400 text-sm uppercase font-semibold px-3 mt-2"
+                    >
+                      {{ childItem.title }}
+                    </h3>
+                  </ng-container>
+                  <!-- Si el elemento del submenú es un separador -->
+                  <ng-container *ngSwitchCase="'divider'">
+                    <hr class="border-t border-gray-700 my-1 mx-3" />
+                  </ng-container>
+                  <!-- Si el elemento del submenú es otro submenú -->
+                  <ng-container *ngSwitchCase="'submenu'">
+                    <a
+                      class="flex p-2 hover:bg-gray-700 hover:rounded-md mx-2 cursor-pointer justify-between items-center align-middle"
+                      (click)="openSubSubMenu(i, j)"
+                    >
+                      <span>{{ childItem.title }}</span>
+                      <!-- Ícono del submenú secundario -->
+                      <i
+                        class="fas fa-greater-than rounded-full text-white transition-transform duration-300 transform rotate-0 w-6 h-6"
+                        [ngClass]="{ 'rotate-90': childItem.isOpen }"
+                        style="
+                          display: flex;
+                          justify-content: center;
+                          align-items: center;
+                        "
+                      ></i>
+                    </a>
+                    <!-- Submenú secundario desplegable -->
+                    <ul *ngIf="childItem.isOpen" class="pl-4 fade-in">
+                      <!-- Iterar sobre los elementos del submenú secundario -->
+                      <li *ngFor="let subChildItem of childItem.children">
+                        <!-- Verificar el tipo de elemento del submenú secundario -->
+                        <ng-container [ngSwitch]="subChildItem.type">
+                          <!-- Si el elemento del submenú secundario es un enlace -->
+                          <ng-container *ngSwitchCase="'link'">
+                            <a
+                              [routerLink]="subChildItem.route"
+                              class="block p-2 hover:bg-gray-700 hover:rounded-md mx-2 justify-between items-center"
+                            >
+                              <span
+                                ><i [class]="subChildItem.icon"></i>
+                                {{ subChildItem.title }}</span
+                              >
+                            </a>
+                          </ng-container>
+                          <!-- Si el elemento del submenú secundario es un título -->
+                          <ng-container *ngSwitchCase="'title'">
+                            <h3
+                              class="text-gray-400 text-sm uppercase font-semibold px-3 mt-2"
+                            >
+                              {{ subChildItem.title }}
+                            </h3>
+                          </ng-container>
+                          <!-- Si el elemento del submenú secundario es un separador -->
+                          <ng-container *ngSwitchCase="'divider'">
+                            <hr class="border-t border-gray-700 my-1 mx-3" />
+                          </ng-container>
+                        </ng-container>
+                      </li>
+                    </ul>
+                  </ng-container>
+                </ng-container>
+              </li>
+            </ul>
+          </ng-container>
+        </ng-container>
+      </li>
+    </ng-container>
+  </ul>
+</aside>
+
+<nav
+  class="bg-primary-custom p-4 flex justify-between items-center transition-all duration-300 w-full"
+  [ngClass]="{ 'pl-0': sidebarHidden, 'pl-64': !sidebarHidden }"
+>
+  <div class="ml-2">
+    <h1 class="text-white text-xl font-semibold">Cool<b>FollowUp</b></h1>
+  </div>
+
+  <div class="flex items-center space-x-4 relative">
+    <span class="text-white cursor-pointer">Bienvenido</span>
+    <button class="text-white focus:outline-none" (click)="toggleUserMenu()">
+      <i class="fas fa-user-circle text-2xl"></i>
+    </button>
+
+    <div class="absolute right-0 top-0 mt-10" *ngIf="isMenuOpen">
+      <div class="w-48 bg-white rounded-md shadow-lg">
+        <!-- Contenido del menú -->
+        <div class="py-1">
+          <a
+            href="#"
+            class="block px-4 py-2 text-gray-800 hover:bg-gray-300 hover:rounded-md mx-2"
+            >Perfil</a
+          >
+          <a
+            href="#"
+            class="block px-4 py-2 text-gray-800 hover:bg-gray-300 hover:rounded-md mx-2"
+            >Configuración</a
+          >
+          <a
+            href="#"
+            class="block px-4 py-2 text-gray-800 hover:bg-gray-300 hover:rounded-md mx-2"
+            >Cerrar sesión</a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Botón para ocultar/mostrar el sidebar -->
+<button
+  class="fixed bottom-4 left-4 p-2 bg-gray-700 hover:bg-gray-600 rounded-full text-white transition-transform duration-300 transform rotate-0 w-12 h-12"
+  [ngClass]="{ 'rotate-180': sidebarHidden }"
+  (click)="toggleSidebar()"
+>
+  <i class="fas fa-less-than text-xl"></i>
+</button>

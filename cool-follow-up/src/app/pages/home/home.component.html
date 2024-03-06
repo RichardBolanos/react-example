@@ -1,0 +1,9 @@
+<app-sidebar (sidebarIsHidden)="sidebarIsHidden($event)"></app-sidebar>
+
+<div 
+  class="transition-all duration-300 ml-2"
+  [ngClass]="{ 'pl-0': sidebarHidden, 'pl-64': !sidebarHidden}"
+>
+  <!-- Router Outlet -->
+  <router-outlet></router-outlet>
+</div>
